@@ -59,6 +59,30 @@ def normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
     return image
 
 
+def pre_resize(image, long_side=768):
+    """_summary_
+
+    Args:
+        image (_type_): _description_
+        long_side (int, optional): _description_. Defaults to 768.
+
+    Returns:
+        _type_: _description_
+    """
+    h, w, c = image.shape
+    if max(h, w) > long_side:
+        if h > w:
+            new_h = long_side
+            new_w = new_h / h * w
+        else:
+            new_w = long_side
+            new_h = new_w / w * h 
+        image = resize(image, (int(new_w), int(new_h)))
+    
+    return image
+    
+
+
 def preprocess(image, input_size=(320, 320)):
     """
     preprocess an image to torch tensor
@@ -70,18 +94,6 @@ def preprocess(image, input_size=(320, 320)):
     Returns:
         torch.Tensor: input image tensor
     """
-    
-    # resize image with long side < 1024
-    h, w, c = image.shape
-    if max(h, w) > 1024:
-        if h > w:
-            new_h = 1024
-            new_w = new_h / h * w
-        else:
-            new_w = 1024
-            new_h = new_w / w * h 
-        img = resize(img, (int(new_w), int(new_h)))
-
     image = resize(image, input_size)
     image = normalize(image)
     image = image.transpose((2, 0, 1))
@@ -211,6 +223,7 @@ def remove_bg(img_path, model, save_dir):
         elif c == 4:
             img_arr = img_arr[..., :3] 
     
+    img_arr = pre_resize(img_arr)
     img_tensor = preprocess(img_arr)
     img_tensor = img_tensor.type(torch.FloatTensor)
     img_tensor = img_tensor.cuda()
@@ -227,7 +240,7 @@ def remove_bg(img_path, model, save_dir):
 
 
 def demo():
-    img_path = "./images/xiaokui_1024.jpg"
+    img_path = "./images/lihua.jpg"
     model = load_model("./checkpoint/u2net_furiends_v1_0716.pth")
     remove_bg(img_path, model, "./images")
 
