@@ -60,14 +60,14 @@ def normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
 
 
 def pre_resize(image, long_side=768):
-    """_summary_
-
+    """
+    pre resize in case of too large input
     Args:
-        image (_type_): _description_
-        long_side (int, optional): _description_. Defaults to 768.
+        image (np.array): input image
+        long_side (int, optional): pre resize shape of long side. Defaults to 768.
 
     Returns:
-        _type_: _description_
+        np.array: resized image
     """
     h, w, c = image.shape
     if max(h, w) > long_side:
@@ -81,7 +81,6 @@ def pre_resize(image, long_side=768):
     
     return image
     
-
 
 def preprocess(image, input_size=(320, 320)):
     """
