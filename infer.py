@@ -70,6 +70,17 @@ def preprocess(image, input_size=(320, 320)):
     Returns:
         torch.Tensor: input image tensor
     """
+    
+    # resize image with long side < 1024
+    h, w, c = image.shape
+    if max(h, w) > 1024:
+        if h > w:
+            new_h = 1024
+            new_w = new_h / h * w
+        else:
+            new_w = 1024
+            new_h = new_w / w * h 
+        img = resize(img, (int(new_w), int(new_h)))
 
     image = resize(image, input_size)
     image = normalize(image)
@@ -216,9 +227,9 @@ def remove_bg(img_path, model, save_dir):
 
 
 def demo():
-    img_path = "./images/xiaokui2.jpg"
+    img_path = "./images/xiaokui_1024.jpg"
     model = load_model("./checkpoint/u2net_furiends_v1_0716.pth")
-    remove_bg(img_path, model, ".")
+    remove_bg(img_path, model, "./images")
 
 if __name__ == "__main__":
     demo()
