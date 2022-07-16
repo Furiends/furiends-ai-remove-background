@@ -216,8 +216,8 @@ def remove_bg(img_path, model, save_dir):
 
 
 def demo():
-    img_path = "xiaokui2.jpg"
-    model = load_model("u2net_furiends_v1_0716.pth")
+    img_path = "./images/xiaokui2.jpg"
+    model = load_model("./checkpoint/u2net_furiends_v1_0716.pth")
     remove_bg(img_path, model, ".")
 
 if __name__ == "__main__":
